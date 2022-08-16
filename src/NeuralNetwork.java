@@ -7,7 +7,7 @@ public class NeuralNetwork {
         layers = new Layer[layerSizes.length-1]; //output "layer" isn't a true layer
         for (int i = 0; i < layers.length; i++) {
             layers[i] = new Layer(layerSizes[i], layerSizes[i+1]);
-            layers[i].activationType = activation;
+            layers[i].act = new Activation(activation);
         }
     }
 

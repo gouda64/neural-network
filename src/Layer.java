@@ -4,7 +4,7 @@ public class Layer {
     int numNodesIn, numNodesOut;
     double[][] weights = new double[numNodesIn][numNodesOut];
     double[] biases = new double[numNodesOut];
-    int activationType;
+    Activation act = new Activation(Activation.SIGMOID); //default activation function in case something falls through
 
     public Layer(int in, int out) {
         numNodesIn = in;
@@ -12,7 +12,6 @@ public class Layer {
     }
 
     public double[] getOutputs(double[] inputs) {
-        Activation act = new Activation(activationType);
         double[] outputs = new double[numNodesOut];
         for (int i = 0; i < outputs.length; i++) {
             double total = biases[i];
