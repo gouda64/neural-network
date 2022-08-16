@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class Activation {
-    static final int SIGMOID = 1; //TODO: implement other functions - tanh, ReLU
+    static final int SIGMOID = 1; //TODO: implement other functions - tanh, ReLU, SiLu
     //also consider linear and softmax for output layer
 
     int funcType;
