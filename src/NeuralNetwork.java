@@ -69,11 +69,15 @@ public class NeuralNetwork {
             layers[i].updateGradients(derivConstants);
         }
     }
-    public void learn(DataPoint[] ds, double learnRate) {
-
+    public void learn(DataPoint[] ds, double learnRate) { //TODO: use multithreading to increase speed
+        for (DataPoint d : ds) {
+            updateGradients(d);
+        }
 
         for (Layer l : layers) {
-            l.addGradients(learnRate);
+            l.addGradients(learnRate / ds.length); //division to make sure it's the average
+            l.weightGradients = new double[l.nodesIn][l.nodesOut];
+            l.biasGradients = new double[l.nodesOut];
         }
     }
 }

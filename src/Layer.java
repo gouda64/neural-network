@@ -3,7 +3,7 @@ public class Layer {
     double[][] weights = new double[nodesIn][nodesOut];
     double[] biases = new double[nodesOut];
     double[][] weightGradients = new double[nodesIn][nodesOut];
-    double[] biasGradients = new double[nodesOut]; //cost gradients for these two
+    double[] biasGradients = new double[nodesOut];
     double[] inputs = new double[nodesIn];
     double[] preActivationOutputs = new double[nodesOut];
 
@@ -43,7 +43,6 @@ public class Layer {
             for (int j = 0; j < nodesIn; j++) {
                 //partial derivative of weighted output to weight is just the input
                 weightGradients[j][i] += inputs[j] * derivConstants[i];
-                //it's being added because we want to calculate the average from all the data points in the end
             }
             biasGradients[i] += 1 * derivConstants[i];
             //partial derivative of the weighted output to bias is just one
