@@ -1,15 +1,26 @@
+import java.io.IOException;
+
 public class NeuralNetwork {
     Layer[] layers;
     Cost costFunc; //default cost function
     Activation outputAct;
 
-    public NeuralNetwork(int[] layerSizes, int activation, int outAct, int cost) {
+    public NeuralNetwork(int[] layerSizes, int activation, int outActivation, int cost) {
         layers = new Layer[layerSizes.length-1]; //output "layer" is really just the outputs from the last layer
         costFunc = new Cost(cost);
-        outputAct = new Activation(outAct);
+        outputAct = new Activation(outActivation);
         for (int i = 0; i < layers.length; i++) {
             layers[i] = new Layer(layerSizes[i], layerSizes[i+1]);
             layers[i].activation = new Activation(activation);
+        }
+    }
+    public NeuralNetwork(int[] layerSizes) {
+        layers = new Layer[layerSizes.length-1]; //output "layer" is really just the outputs from the last layer
+        costFunc = new Cost(Cost.QUADRATIC);
+        outputAct = new Activation(Activation.LINEAR);
+        for (int i = 0; i < layers.length; i++) {
+            layers[i] = new Layer(layerSizes[i], layerSizes[i+1]);
+            layers[i].activation = new Activation(Activation.SIGMOID);
         }
     }
 
