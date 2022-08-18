@@ -3,7 +3,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 
 public class IDXInterpreter {
-    public static int[][] imageRead(String imageFile) {
+    public static double[][] imageRead(String imageFile) {
         try {
             FileInputStream imageContent = new FileInputStream(imageFile);
 
@@ -13,10 +13,10 @@ public class IDXInterpreter {
             int numRows = (imageContent.read() << 24) | (imageContent.read() << 16) | (imageContent.read() << 8) | imageContent.read();
             int numCols = (imageContent.read() << 24) | (imageContent.read() << 16) | (imageContent.read() << 8) | imageContent.read();
 
-            int[][] imgs = new int[numItems][numRows * numCols];
+            double[][] imgs = new double[numItems][numRows * numCols];
             for (int i = 0; i < numItems; i++) {
                 for (int j = 0; j < numRows * numCols; j++) {
-                    imgs[i][j] = imageContent.read();
+                    imgs[i][j] = (255.0 - imageContent.read()) / 255; //make it a value between 0 and 1
                 }
             }
             imageContent.close();
