@@ -1,17 +1,27 @@
 public class Layer {
     int nodesIn, nodesOut;
-    double[][] weights = new double[nodesIn][nodesOut];
-    double[] biases = new double[nodesOut];
-    double[][] weightGradients = new double[nodesIn][nodesOut];
-    double[] biasGradients = new double[nodesOut];
-    double[] inputs = new double[nodesIn];
-    double[] preActivationOutputs = new double[nodesOut];
+    double[][] weights;
+    double[] biases;
+    double[][] weightGradients;
+    double[] biasGradients;
+    double[] inputs;
+    double[] preActivationOutputs;
 
     Activation activation = new Activation(Activation.SIGMOID); //default activation function in case something falls through
 
     public Layer(int in, int out) {
         nodesIn = in;
         nodesOut = out;
+
+        weights = new double[nodesIn][nodesOut];
+        biases = new double[nodesOut];
+
+        weightGradients = new double[nodesIn][nodesOut];
+        biasGradients = new double[nodesOut];
+
+        inputs = new double[nodesIn];
+        preActivationOutputs = new double[nodesOut];
+
         initWeights();
     }
 
