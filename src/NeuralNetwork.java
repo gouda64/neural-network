@@ -85,9 +85,9 @@ public class NeuralNetwork {
             layers[i].updateGradients(derivConstants);
         }
     }
-    public void learn(DataPoint[] ds) { //TODO: use multithreading to increase speed
+    public void learn(DataPoint[] ds) {
         for (DataPoint d : ds) {
-            updateGradients(d);
+            new GradientThread(d).start();
         }
 
         for (Layer l : layers) {
@@ -97,54 +97,14 @@ public class NeuralNetwork {
         }
     }
 
-    public static void main(String[] args) {
-        NeuralNetwork nn = new NeuralNetwork(new int[]{28*28, 100, 10});
-        double[][] trainImages = IDXInterpreter.imageRead("./src/MNIST-dataset/train-images.idx");
-        int[] trainLabels = IDXInterpreter.labelRead("./src/MNIST-dataset/train-labels.idx");
-
-        double[][] testImages = IDXInterpreter.imageRead("./src/MNIST-dataset/test-images.idx");
-        int[] testLabels = IDXInterpreter.labelRead("./src/MNIST-dataset/test-labels.idx");
-
-        System.out.println("starting if");
-        if (trainImages != null && trainLabels != null && testImages != null && testLabels != null) {
-            DataPoint[] trainDs = new DataPoint[trainLabels.length];
-            DataPoint[] testDs = new DataPoint[testLabels.length];
-
-            for (int i = 0; i < trainLabels.length; i++) {
-                double[] outs = new double[10];
-                outs[trainLabels[i]] = 1;
-                trainDs[i] = new DataPoint(trainImages[i], outs);
-            }
-            for (int i = 0; i < testLabels.length; i++) {
-                double[] outs = new double[10];
-                outs[testLabels[i]] = 1;
-                testDs[i] = new DataPoint(testImages[i], outs);
-            }
-
-            int minibatch = 100;
-            for (int k = 0; k < 10; k++) {
-                System.out.println("starting learning");
-                ArrayList<DataPoint> trainAvailable = new ArrayList<>(Arrays.asList(trainDs));
-                ArrayList<DataPoint> testAvailable = new ArrayList<>(Arrays.asList(testDs));
-
-                for (int i = 0; i < trainImages.length; i++) {
-                    DataPoint[] trainBatch = new DataPoint[minibatch];
-                    DataPoint[] testBatch = new DataPoint[minibatch];
-                    if (trainAvailable.size() < minibatch) {
-                        trainAvailable = new ArrayList<>(Arrays.asList(trainDs));
-                    }
-                    if (testAvailable.size() < minibatch) {
-                        testAvailable = new ArrayList<>(Arrays.asList(testDs));
-                    }
-                    for (int j = 0; j < minibatch; j++) {
-                        trainBatch[j] = trainAvailable.remove((int)(Math.random()*trainAvailable.size()));
-                        testBatch[j] = testAvailable.remove((int)(Math.random()*testAvailable.size()));
-                    }
-
-                    nn.learn(trainBatch);
-                }
-                nn.averageCost(testDs);
-            }
+    public class GradientThread extends Thread {
+        DataPoint d;
+        public GradientThread(DataPoint d) {
+            this.d = d;
+        }
+        @Override
+        public void run() {
+            updateGradients(d);
         }
     }
 }
