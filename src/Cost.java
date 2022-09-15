@@ -1,4 +1,6 @@
-public class Cost {
+import java.io.Serializable;
+
+public class Cost implements Serializable {
     static final int QUADRATIC = 0;
     //TODO: add different cost functions
     // (https://stats.stackexchange.com/questions/154879/a-list-of-cost-functions-used-in-neural-networks-alongside-applications)

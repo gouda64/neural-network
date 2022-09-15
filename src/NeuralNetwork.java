@@ -1,12 +1,13 @@
-import javax.xml.crypto.Data;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class NeuralNetwork {
+public class NeuralNetwork implements Serializable {
     Layer[] layers;
     Cost costFunc; //default cost function
     Activation outputAct;
     double learnRate;
+    private String infoFile;
 
     public NeuralNetwork(int[] layerSizes, int activation, int outActivation, int cost, double learnRate) {
         layers = new Layer[layerSizes.length-1]; //output "layer" is really just the outputs from the last layer
@@ -94,6 +95,72 @@ public class NeuralNetwork {
             l.addGradients(learnRate / ds.length); //division to make sure it's the average
             l.weightGradients = new double[l.nodesIn][l.nodesOut];
             l.biasGradients = new double[l.nodesOut];
+        }
+    }
+
+    public void train(DataPoint[] trainDs, int batch, int epochs) {
+        for (int k = 0; k < epochs; k++) {
+            ArrayList<DataPoint> trainAvailable = new ArrayList<>(Arrays.asList(trainDs));
+
+            //epoch
+            for (int i = 0; i < trainDs.length/batch; i++) {
+                DataPoint[] trainBatch = new DataPoint[batch];
+                if (trainAvailable.size() < batch) {
+                    trainAvailable = new ArrayList<>(Arrays.asList(trainDs));
+                }
+                for (int j = 0; j < batch; j++) {
+                    trainBatch[j] = trainAvailable.remove((int)(Math.random()*trainAvailable.size()));
+                }
+
+                learn(trainBatch);
+            }
+        }
+    }
+
+    public double test(DataPoint[] testDs, int batch) {
+        ArrayList<DataPoint> testAvailable = new ArrayList<>(Arrays.asList(testDs));
+        DataPoint[] testBatch = new DataPoint[batch];
+        for (int j = 0; j < batch; j++) {
+            testBatch[j] = testAvailable.remove((int)(Math.random()*testAvailable.size()));
+        }
+
+        return averageCost(testBatch);
+    }
+
+    public void writeInfo() {
+        if (infoFile == null) {
+            System.out.println("no info file available"); //or use exception, it's just less convenient
+            return;
+        }
+        try (FileOutputStream fos = new FileOutputStream(infoFile);
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+            oos.writeObject(this);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void writeInfo(String fileName) {
+        infoFile = fileName;
+        try (FileOutputStream fos = new FileOutputStream(infoFile);
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+            oos.writeObject(this);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static NeuralNetwork readInfo(String fileName) {
+        try (FileInputStream fis = new FileInputStream(fileName);
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+            NeuralNetwork from = (NeuralNetwork) ois.readObject();
+            from.infoFile = fileName;
+            return from;
+        }
+        catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

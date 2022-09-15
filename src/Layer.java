@@ -1,4 +1,6 @@
-public class Layer {
+import java.io.Serializable;
+
+public class Layer implements Serializable {
     int nodesIn, nodesOut;
     double[][] weights;
     double[] biases;

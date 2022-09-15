@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.*;
 
-public class Activation {
+public class Activation implements Serializable {
     static final int LINEAR = 0; //only really useful for output layer
     static final int SIGMOID = 1; //TODO: implement other functions - tanh, ReLU, SiLu
     //also consider softmax for output layer
